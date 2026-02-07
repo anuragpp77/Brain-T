@@ -50,12 +50,12 @@ else:
 
 
 @st.cache_resource
-def load_prediction_model():
-    try:
-        loaded_model = tf.keras.models.load_model('brain_tumor.keras')
-        return loaded_model
-    except:
-        return None
+# def load_prediction_model():
+#     try:
+#         loaded_model = tf.keras.models.load_model('brain_tumor.keras')
+#         return loaded_model
+#     except:
+#         return None
 
 
 # --- 3. LOAD ASSETS ---
@@ -245,3 +245,4 @@ with col2:
     </div>
 
     """, unsafe_allow_html=True)
+
