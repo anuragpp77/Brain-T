@@ -29,9 +29,8 @@ def load_prediction_model():
             file_size = os.path.getsize(model_path)
             if file_size < 1000000:  # If file is < 1MB, it's definitely corrupt/HTML
                 os.remove(model_path)
-                print("Deleted corrupt model file. Re-downloading...")
         except Exception:
-            pass # Ignore errors if file is busy
+            pass 
 
     # Download Logic
     if not os.path.exists(model_path):
@@ -237,4 +236,10 @@ with col2:
     <div class="hero-container">
         <div class="hero-overlay">
             <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;">Brain Tumour<br>Prediction system</h1>
-            <p style="font-size: 14px; opacity: 0.9; line-height: 1.
+            <p style="font-size: 14px; opacity: 0.9; line-height: 1.6; max-width: 90%;">
+                Discover limitless potential to combine medical and technological aspects.
+            </p>
+            <div style="text-align: right; margin-top: -45px; font-size: 24px;">➝</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
