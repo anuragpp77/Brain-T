@@ -1,0 +1,6 @@
+streamlit
+numpy
+PIL
+skimage.transform
+tensorflow
+base64
