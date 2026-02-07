@@ -21,50 +21,60 @@ st.set_page_config(
 def load_prediction_model():
     model_path = 'brain_tumor.keras'
     file_id = '1CUUrtWOOi4Izi7URntsL0c2HMOCRhCxo'
+    url = "https://drive.google.com/uc?export=download"
     
-    # 1. Download only if file doesn't exist
+    # [SELF-REPAIR] Check if file exists but is corrupt (e.g., small HTML file)
+    if os.path.exists(model_path):
+        try:
+            file_size = os.path.getsize(model_path)
+            if file_size < 1000000:  # If file is < 1MB, it's definitely corrupt/HTML
+                os.remove(model_path)
+                print("Deleted corrupt model file. Re-downloading...")
+        except Exception:
+            pass # Ignore errors if file is busy
+
+    # Download Logic
     if not os.path.exists(model_path):
-        url = "https://drive.google.com/uc?export=download"
         session = requests.Session()
-        
         with st.spinner("Downloading model from Google Drive... (This happens once)"):
             try:
-                # First request to get the confirmation token (for large files)
+                # 1. Initial request to check for warning
                 response = session.get(url, params={'id': file_id}, stream=True)
                 
+                # 2. Check for Google Drive "Virus Scan Warning" token
                 token = None
                 for key, value in response.cookies.items():
                     if key.startswith('download_warning'):
                         token = value
                         break
-
-                # If there is a warning token, we need to add it to the request
+                
+                # 3. If warning exists, confirm it
                 if token:
                     params = {'id': file_id, 'confirm': token}
                     response = session.get(url, params=params, stream=True)
                 
-                # Write the file in chunks to avoid memory issues
+                # 4. Save the file in chunks
                 if response.status_code == 200:
                     with open(model_path, "wb") as f:
                         for chunk in response.iter_content(32768):
                             if chunk:
                                 f.write(chunk)
                 else:
-                    st.error(f"Google Drive Error: Status Code {response.status_code}")
+                    st.error(f"Google Drive Error: Status {response.status_code}")
                     return None
                     
             except Exception as e:
                 st.error(f"Download connection failed: {e}")
                 return None
     
-    # 2. Load the Model
+    # Load Model
     try:
         return tf.keras.models.load_model(model_path)
     except Exception as e:
-        # If this happens, the file is likely corrupt/HTML. Delete it so we try again next time.
+        # If load fails, delete the bad file so we can retry on next boot
         if os.path.exists(model_path):
             os.remove(model_path)
-        st.error(f"Error loading model: {e}. Please Reboot the app to re-download.")
+        st.error(f"Error loading model: {e}")
         return None
 
 def get_base64_image(image_path):
@@ -85,6 +95,7 @@ def process_image(img):
 cnn_model = load_prediction_model()
 CLASS_NAMES = ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
 
+# Background Logic
 img_b64 = get_base64_image("a.jpg")
 if img_b64:
     hero_bg_image = f"url('data:image/jpg;base64,{img_b64}')"
@@ -95,60 +106,47 @@ else:
 # --- 4. CUSTOM CSS ---
 st.markdown(f"""
 <style>
-    /* 1. Main Background */
+    /* Main Background */
     .stApp {{
         background: #f0f2f6;
         background: linear-gradient(315deg, #f0f2f6 0%, #c5cbe3 74%);
     }}
 
-    /* 2. THE LEFT "CARD" STYLE */
+    /* Left Card */
     div[data-testid="column"]:nth-of-type(1) > div {{
         background-color: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
         border-radius: 20px;
         padding: 30px;
         box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.18);
     }}
 
-    /* 3. UPLOADER STYLING */
+    /* Uploader */
     [data-testid="stFileUploader"] {{
         background-color: rgba(235, 240, 255, 0.4);
         border: 2px dashed #8c92ac;
         border-radius: 20px;
         padding: 30px 20px; 
-        transition: all 0.3s ease-in-out;
     }}
-    [data-testid="stFileUploader"]:hover {{
-        background-color: rgba(235, 240, 255, 0.7);
-        border-color: #5D17EB;
-        box-shadow: 0 0 15px rgba(93, 23, 235, 0.1);
+    
+    /* Analyze Button */
+    div.stButton > button {{
+        background: linear-gradient(to right, #5D17EB, #1A0F2E ) !important; 
+        color: white !important; 
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 15px 30px !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(93, 23, 235, 0.4);
     }}
-    [data-testid="stFileUploader"] section {{
-        background-color: transparent !important;
-        padding: 0 !important;
-    }}
-    [data-testid="stFileUploader"] section > div {{
-        color: #36454F !important;
-        font-weight: 500;
-    }}
-    /* The small "Browse files" button inside the uploader */
-    [data-testid="stFileUploader"] button {{
-        background: linear-gradient(90deg, #4A90E2 0%, #5D17EB 100%);
-        color: white;
-        border: none;
-        border-radius: 25px;
-        padding: 8px 25px;
-        font-weight: 600;
-        box-shadow: 0 4px 10px rgba(93, 23, 235, 0.2);
-    }}
-    [data-testid="stFileUploader"] small {{
-        color: #5D17EB !important;
-        font-size: 12px;
+    div.stButton > button:active {{
+        transform: scale(0.98);
     }}
 
-    /* 4. RIGHT HERO CARD */
+    /* Hero Card */
     .hero-container {{
         width: 100%;
         height: 100%;
@@ -172,26 +170,7 @@ st.markdown(f"""
         justify-content: flex-end;
         color: white;
     }}
-
-    /* --- 5. ANALYZE BUTTON STYLING (The Big Red Button) --- */
-    div.stButton > button {{
-        background: linear-gradient(to right, #5D17EB, #1A0F2E ) !important; 
-        color: white !important;  /* <--- !important FIXES THE VISIBILITY */
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 15px 30px !important;
-        font-size: 18px !important;
-        font-weight: bold !important;
-        transition: 0.3s;
-        box-shadow: 0 5px 15px rgba(93, 23, 235, 0.4);
-    }}
-
-    div.stButton > button:active {{
-        transform: scale(0.98);
-    }}
-
-    /* Typography & Results */
-    h3 {{ margin-top: 0; font-family: 'Helvetica Neue', sans-serif; }}
+    
     .result-box {{
         background: #fff;
         border-radius: 15px;
@@ -224,13 +203,11 @@ with col1:
     st.markdown("""<div style="text-align: center;"><h3>Upload Medical Scans</h3></div>""", unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader("Upload", type=['png', 'jpg', 'jpeg'], label_visibility="collapsed")
-
-    # This button will now be styled by section #5 in the CSS above
     analyze_btn = st.button("Analyze Scan", type="primary", use_container_width=True, disabled=not uploaded_file)
 
     if analyze_btn and uploaded_file:
         if cnn_model is None:
-            st.error("Model not found. Please ensure 'brain_tumor.keras' is in the folder.")
+            st.error("Model not found. Please reboot the app to retry downloading.")
         else:
             try:
                 image_data = Image.open(uploaded_file)
@@ -252,7 +229,7 @@ with col1:
                 </div>
                 """, unsafe_allow_html=True)
             except Exception as e:
-                st.error(f"Error: {e}")
+                st.error(f"Error during analysis: {e}")
 
 # === RIGHT COLUMN ===
 with col2:
@@ -260,10 +237,4 @@ with col2:
     <div class="hero-container">
         <div class="hero-overlay">
             <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;">Brain Tumour<br>Prediction system</h1>
-            <p style="font-size: 14px; opacity: 0.9; line-height: 1.6; max-width: 90%;">
-                Discover limitless potential to combine medical and technological aspects.
-            </p>
-            <div style="text-align: right; margin-top: -45px; font-size: 24px;">➝</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+            <p style="font-size: 14px; opacity: 0.9; line-height: 1.
