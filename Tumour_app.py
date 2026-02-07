@@ -27,9 +27,10 @@ def load_prediction_model():
 
 # --- 1. CONFIGURATION ---
 @@ -224,4 +243,5 @@
-            <div style="text-align: right; margin-top: -45px; font-size: 24px;">➝</div>
+            <div style="text-align: right; margin-top: -45px; font-size: 24px;"></div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     """, unsafe_allow_html=True)
+
