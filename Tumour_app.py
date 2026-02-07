@@ -10,7 +10,8 @@ import requests
 @st.cache_resource
 def load_prediction_model():
     model_path = 'brain_tumor.keras'
-    url = "https://drive.google.com/file/d/1CUUrtWOOi4Izi7URntsL0c2HMOCRhCxo/view?usp=sharing"
+    file_id = '1CUUrtWOOi4Izi7URntsL0c2HMOCRhCxo'
+    url = f"https://drive.google.com/uc?export=download&id={file_id}"
     
     if not os.path.exists(model_path):
         with st.spinner("Downloading model from Google Drive... this may take a minute."):
@@ -24,7 +25,11 @@ def load_prediction_model():
                 
     return tf.keras.models.load_model(model_path)
 
-
+    try:
+        return tf.keras.models.load_model(model_path)
+    except Exception as e:
+        st.error(f"Error loading model file: {e}")
+        return None
 # --- 1. CONFIGURATION ---
 st.set_page_config(
     page_title="Brain Tumour Prediction",
@@ -49,7 +54,7 @@ else:
 
 
 
-@st.cache_resource
+# @st.cache_resource
 # def load_prediction_model():
 #     try:
 #         loaded_model = tf.keras.models.load_model('brain_tumor.keras')
@@ -245,4 +250,5 @@ with col2:
     </div>
 
     """, unsafe_allow_html=True)
+
 
