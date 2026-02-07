@@ -3,5 +3,6 @@ numpy
 Pillow
 scikit-image
 tensorflow
+requests
 
 
