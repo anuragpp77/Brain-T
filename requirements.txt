@@ -1,6 +1,7 @@
 streamlit
 numpy
-PIL
+Pillow
 skimage.transform
 tensorflow
+
 base64
