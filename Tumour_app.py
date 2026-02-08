@@ -4,6 +4,9 @@ from PIL import Image
 from skimage.transform import resize
 import tensorflow as tf
 import base64
+import gdown
+import os
+
 
 
 # --- 1. CONFIGURATION ---
@@ -28,19 +31,31 @@ if img_b64:
 else:
     hero_bg_image = "url('https://img.freepik.com/free-photo/purple-brain-digital-art_23-2151121175.jpg')"
 
-
-
 @st.cache_resource
-def load_prediction_model():
+def load_model_from_drive():
+    # Define paths
+    file_id = '1CUUrtWOOi4Izi7URntsL0c2HMOCRhCxo'
+    url = f'https://drive.google.com/uc?id={file_id}'
+    output = 'brain_tumor.keras'
+    
+    # Download if missing
+    if not os.path.exists(output):
+        try:
+            gdown.download(url, output, quiet=False)
+        except Exception as e:
+            st.error(f"Failed to download model: {e}")
+            return None
+    
+    # Load model
     try:
-        loaded_model = tf.keras.models.load_model('brain_tumor.keras')
-        return loaded_model
-    except:
+        model = tf.keras.models.load_model(output)
+        return model
+    except Exception as e:
+        st.error(f"Failed to load model: {e}")
         return None
 
-
-# --- 3. LOAD ASSETS ---
-cnn_model = load_prediction_model()
+# Load the model once at the start
+cnn_model = load_model_from_drive()
 CLASS_NAMES = ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
 
 def process_image(img):
@@ -224,4 +239,5 @@ with col2:
             <div style="text-align: right; margin-top: -45px; font-size: 24px;">➝</div>
         </div>
     </div>
+
     """, unsafe_allow_html=True)
