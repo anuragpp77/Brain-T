@@ -59,10 +59,10 @@ cnn_model = load_model_from_drive()
 CLASS_NAMES = ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
 
 def process_image(img):
-    img_gray = img.convert('L')
-    img_array = np.array(img_gray)
-    img_resized = resize(img_array, (150, 150, 1))
-    img_final = img_resized.reshape(1, 150, 150, 1)
+    img_rgb = img.convert('RGB')                    
+    img_array = np.array(img_rgb) / 255.0           
+    img_resized = resize(img_array, (224, 224, 3))  
+    img_final = img_resized.reshape(1, 224, 224, 3) 
     return img_final
 
 # --- 4. CUSTOM CSS ---
@@ -241,4 +241,5 @@ with col2:
     </div>
 
     """, unsafe_allow_html=True)
+
 
