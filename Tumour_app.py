@@ -34,7 +34,7 @@ else:
 @st.cache_resource
 def load_model_from_drive():
     # Define paths
-    file_id = '1CUUrtWOOi4Izi7URntsL0c2HMOCRhCxo'
+    file_id = '1dJ6YT7nItUbuJEFk393RReVPwGjp3tHc'
     url = f'https://drive.google.com/uc?id={file_id}'
     output = 'brain_tumor.keras'
     
@@ -241,3 +241,4 @@ with col2:
     </div>
 
     """, unsafe_allow_html=True)
+
