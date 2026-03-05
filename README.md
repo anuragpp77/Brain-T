@@ -1,9 +1,13 @@
-🧠 Brain Tumor Classification — VGG16 Transfer Learning
+**** 🧠 BRAIN TUMOR CLASSIFICATION — VGG16 TRANSFER LEARNING ****
 
-One-line description: "Deep learning model to classify brain MRI scans into 4 tumor categories using fine-tuned VGG16."
-Streamlit: https://brain-t-prediction.streamlit.app/
+One-line description:
+"Deep learning model to classify brain MRI scans into 4 tumor categories using fine-tuned VGG16."
 
-📌 Table of Contents
+Streamlit: [https://brain-t-prediction.streamlit.app/](https://brain-t-prediction.streamlit.app/)
+
+---
+
+**** 📌 TABLE OF CONTENTS ****
 
 Demo
 Overview
@@ -18,49 +22,59 @@ Project Structure
 Future Work
 License
 
+---
 
-🎯 Demo
+**** 🎯 DEMO ****
 
-Screenshot or GIF of the Streamlit app
-Sample prediction output
+* Screenshot or GIF of the Streamlit app
+* Sample prediction output
 
+---
 
-📖 Overview
+**** 📖 OVERVIEW ****
 
-Problem statement (1–2 lines)
-4 classes: Glioma, Meningioma, No Tumor, Pituitary
-Approach: Transfer learning on VGG16
+* Problem statement (1–2 lines)
+* 4 Classes: Glioma, Meningioma, No Tumor, Pituitary
+* Approach: Transfer learning on VGG16
 
+---
 
-📂 Dataset
+**** 📂 DATASET ****
 
-Source / download link
-Folder structure (Training / Testing split)
-Class distribution table
+* Source / download link
+* Folder structure (Training / Testing split)
+* Class distribution table
 
+---
 
-🏗️ Model Architecture
+**** 🏗️ MODEL ARCHITECTURE ****
 
-Base: VGG16 (ImageNet pretrained)
-Fine-tuning strategy (block5 unfrozen)
-Classification head diagram or table
-GAP vs Flatten comparison
+* Base: VGG16 (ImageNet pretrained)
+* Fine-tuning strategy (Block 5 unfrozen)
+* Classification head diagram or table
+* GAP vs Flatten comparison
 
+---
 
-🔧 Improvements Over Baseline
+**** 🔧 IMPROVEMENTS OVER BASELINE ****
 
-Table: Bug → Fix (all 9 fixes)
+* Table: Bug → Fix (all 9 fixes)
 
+---
 
-🎛️ Training
+**** 🎛️ TRAINING ****
 
-Hyperparameters table (lr, batch size, epochs)
-Callbacks: EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
-Augmentation strategy
+* Hyperparameters table (learning rate, batch size, epochs)
+* Callbacks: EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+* Augmentation strategy
 
+---
 
-📊 Results
+**** 📊 RESULTS ****
 
-Accuracy & Loss graphs
-Final test accuracy & loss
-Hardware note: trained on 4GB VRAM consumer GPU
+* Accuracy & Loss graphs
+* Final test accuracy & loss
+* Hardware note: Trained on 4GB VRAM consumer GPU
+
+---
+
