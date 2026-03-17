@@ -2,7 +2,7 @@
 
 ---
 
-**** 🧠 BRAIN TUMOR CLASSIFICATION — VGG16 TRANSFER LEARNING ****
+🧠 BRAIN TUMOR CLASSIFICATION — VGG16 TRANSFER LEARNING 
 
 One-line description:
 "Deep learning model to classify brain MRI scans into 4 tumor categories using fine-tuned VGG16."
